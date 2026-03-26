@@ -1,17 +1,24 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-import { getImagesByQuery } from './js/pixabay-api';
+import { getImagesByQuery, totalPages } from './js/pixabay-api';
 import {
   clearGallery,
   createGallery,
   hideLoader,
+  hideLoadMoreButton,
+  loadMoreBtn,
   showLoader,
+  showLoadMoreButton,
 } from './js/render-functions';
 
 const form = document.querySelector('.form');
 
+let insertedText = '';
+let currentPage = 1;
+
 form.addEventListener('submit', handlerSearchForm);
+loadMoreBtn.addEventListener('click', handlerLoadMoreBtn);
 
 export function handlerSearchForm(e) {
   e.preventDefault();
@@ -27,9 +34,11 @@ export function handlerSearchForm(e) {
     });
     return;
   }
+  insertedText = searchText;
   showLoader();
   clearGallery();
-  const result = getImagesByQuery(searchText);
+  hideLoadMoreButton();
+  const result = getImagesByQuery(searchText, 1);
 
   result
     .then(response => {
@@ -45,6 +54,53 @@ export function handlerSearchForm(e) {
       }
 
       createGallery(imgs);
+      showLoadMoreButton();
+    })
+    .catch(error => {
+      console.log(error);
+
+      iziToast.show({
+        position: 'topRight',
+        message: error,
+      });
+    })
+    .finally(data => {
+      hideLoader();
+    });
+}
+
+function handlerLoadMoreBtn() {
+  currentPage += 1;
+
+  hideLoadMoreButton();
+
+  if (currentPage > totalPages) {
+    return iziToast.error({
+      position: 'topRight',
+      message: "We're sorry, there are no more posts to load",
+    });
+  }
+
+  showLoader();
+
+  const result = getImagesByQuery(insertedText, currentPage);
+
+  result
+    .then(response => {
+      const imgs = response;
+      if (imgs.length === 0) {
+        iziToast.show({
+          position: 'topRight',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+        });
+        return;
+      }
+      createGallery(imgs);
+      setTimeout(async () => {
+        scroll();
+      }, 200);
+      showLoadMoreButton();
     })
     .catch(error => {
       iziToast.show({
@@ -55,4 +111,15 @@ export function handlerSearchForm(e) {
     .finally(data => {
       hideLoader();
     });
+}
+
+function scroll() {
+  const { height } = document
+    .querySelector('.gallery-item')
+    .getBoundingClientRect();
+
+  window.scrollBy({
+    top: height * 2,
+    behavior: 'smooth',
+  });
 }

@@ -152,3 +152,7 @@ p {
     transform: rotate(360deg);
   }
 }
+
+.load-more {
+  margin: 0 auto 16px;
+}

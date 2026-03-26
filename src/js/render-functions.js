@@ -3,6 +3,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const gallery = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
+export const loadMoreBtn = document.querySelector('.load-more');
 
 const lightbox = new SimpleLightbox('.gallery a', {});
 
@@ -22,7 +23,6 @@ function itemTemplate(image) {
 
 //Ця функція повинна приймати масив images, створювати HTML-розмітку для галереї, додавати її в контейнер галереї та викликати метод екземпляра SimpleLightbox refresh(). Нічого не повертає.
 export function createGallery(images) {
-  console.log('createGallery started');
   const result = images.map(itemTemplate).join('');
   gallery.insertAdjacentHTML('beforeend', result);
   lightbox.refresh();
@@ -41,4 +41,14 @@ export function showLoader() {
 //Ця функція нічого не приймає, повинна прибирати клас для відображення лоадера. Нічого не повертає.
 export function hideLoader() {
   loader.style.display = 'none';
+}
+
+//Ця функція нічого не приймає, повинна додавати клас для відображення кнопки Load more. Нічого не повертає.
+export function showLoadMoreButton() {
+  loadMoreBtn.style.display = 'block';
+}
+
+//Ця функція нічого не приймає, повинна прибирати клас для відображення кнопки Load more. Нічого не повертає.
+export function hideLoadMoreButton() {
+  loadMoreBtn.style.display = 'none';
 }

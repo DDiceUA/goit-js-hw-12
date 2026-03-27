@@ -82,7 +82,7 @@ function handlerLoadMoreBtn() {
 
   hideLoadMoreButton();
 
-  if (currentPage >= totalPages) {
+  if (currentPage > totalPages) {
     return iziToast.error({
       position: 'topRight',
       message: "We're sorry, there are no more posts to load",

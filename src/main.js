@@ -67,44 +67,15 @@ export function handlerSearchForm(e) {
     } finally {
       hideLoader();
       form.reset();
+      if (currentPage >= totalPages) {
+        hideLoadMoreButton();
+        return iziToast.error({
+          position: 'topRight',
+          message: "We're sorry, there are no more posts to load",
+        });
+      }
     }
   }, 200);
-
-  //delete
-  //   result
-  //     .then(response => {
-  //       const imgs = response.hits;
-
-  //       if (imgs.length === 0) {
-  //         iziToast.show({
-  //           position: 'topRight',
-  //           message:
-  //             'Sorry, there are no images matching your search query. Please try again!',
-  //         });
-  //         return;
-  //       }
-
-  //       createGallery(imgs);
-  //       showLoadMoreButton();
-
-  //       if (currentPage >= totalPages) {
-  //         return iziToast.error({
-  //           position: 'topRight',
-  //           message: "We're sorry, there are no more posts to load",
-  //         });
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-
-  //       iziToast.show({
-  //         position: 'topRight',
-  //         message: error,
-  //       });
-  //     })
-  //     .finally(data => {
-  //       hideLoader();
-  //     });
 }
 
 function handlerLoadMoreBtn() {
@@ -112,7 +83,7 @@ function handlerLoadMoreBtn() {
 
   hideLoadMoreButton();
 
-  if (currentPage > totalPages) {
+  if (currentPage >= totalPages) {
     return iziToast.error({
       position: 'topRight',
       message: "We're sorry, there are no more posts to load",
@@ -121,9 +92,6 @@ function handlerLoadMoreBtn() {
 
   showLoader();
 
-  // const result = getImagesByQuery(insertedText, currentPage);
-
-  //new code async
   setTimeout(async () => {
     try {
       const data = await getImagesByQuery(insertedText, currentPage);
@@ -138,7 +106,6 @@ function handlerLoadMoreBtn() {
       }
       createGallery(imgs);
       showLoadMoreButton();
-      currentPage++;
     } catch (error) {
       iziToast.show({
         message: `Error: ${error}`,
@@ -146,38 +113,11 @@ function handlerLoadMoreBtn() {
         position: 'topRight',
       });
     } finally {
+      scroll();
       hideLoader();
       form.reset();
     }
   }, 200);
-
-  //delete
-  result;
-  // .then(response => {
-  //   const imgs = response.hits;
-  //   if (imgs.length === 0) {
-  //     iziToast.show({
-  //       position: 'topRight',
-  //       message:
-  //         'Sorry, there are no images matching your search query. Please try again!',
-  //     });
-  //     return;
-  //   }
-  //   createGallery(imgs);
-  //   setTimeout(async () => {
-  //     scroll();
-  //   }, 200);
-  //   showLoadMoreButton();
-  // })
-  // .catch(error => {
-  //   iziToast.show({
-  //     position: 'topRight',
-  //     message: error,
-  //   });
-  // })
-  // .finally(data => {
-  //   hideLoader();
-  // });
 }
 
 function scroll() {

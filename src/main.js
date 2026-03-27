@@ -57,7 +57,6 @@ export function handlerSearchForm(e) {
       }
       createGallery(imgs);
       showLoadMoreButton();
-      currentPage++;
     } catch (error) {
       iziToast.show({
         message: `Error: ${error}`,
@@ -115,6 +114,13 @@ function handlerLoadMoreBtn() {
     } finally {
       scroll();
       hideLoader();
+      if (currentPage >= totalPages) {
+        hideLoadMoreButton();
+        return iziToast.error({
+          position: 'topRight',
+          message: "We're sorry, there are no more posts to load",
+        });
+      }
       form.reset();
     }
   }, 200);

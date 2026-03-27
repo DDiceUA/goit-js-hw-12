@@ -20,5 +20,5 @@ export async function getImagesByQuery(query, currentPage) {
   });
   const totalHits = result.data.totalHits;
   totalPages = Math.ceil(totalHits / itemsPerPage);
-  return result.data.hits;
+  return result.data;
 }
